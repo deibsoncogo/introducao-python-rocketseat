@@ -31,7 +31,23 @@ def addProduct():
     db.session.commit()
 
     return jsonify({"message": "Product added successfully"}), 201
+
   return jsonify({ "message": "Invalid product data" }), 422
+
+# rota para buscar um produto
+@app.route("/products/<int:id>", methods=["GET"])
+def getProduct(id):
+  product = Product.query.get(id)
+
+  if product:
+    return jsonify({
+      "id": product.id,
+      "name": product.name,
+      "price": product.price,
+      "description": product.description,
+    }), 200
+
+  return jsonify({ "message": "Product not found" }), 404
 
 # rota para excluir um produto
 @app.route("/products/delete/<int:id>", methods=["DELETE"])
@@ -43,6 +59,7 @@ def deleteProduct(id):
     db.session.commit()
 
     return jsonify({ "message": "Product deleted successfully" }), 205
+
   return jsonify({ "message": "Product not found" }), 404
 
 # define uma rota raiz
