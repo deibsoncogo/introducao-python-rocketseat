@@ -49,6 +49,29 @@ def getProduct(id):
 
   return jsonify({ "message": "Product not found" }), 404
 
+# rota para alterar um produto
+@app.route("/products/update/<int:id>", methods=["PUT"])
+def updateProduct(id):
+  product = Product.query.get(id)
+
+  if not product:
+    return jsonify({ "message": "Product not found" }), 404
+
+  data = request.json
+
+  if "name" in data:
+    product.name = data["name"]
+
+  if "price" in data:
+    product.price = data["price"]
+
+  if "description" in data:
+    product.description = data["description"]
+
+  db.session.commit()
+
+  return jsonify({ "message": "Product updated successfully" }), 205
+
 # rota para excluir um produto
 @app.route("/products/delete/<int:id>", methods=["DELETE"])
 def deleteProduct(id):
