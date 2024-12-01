@@ -1,14 +1,22 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from flask_login import UserMixin
+from flask_login import UserMixin, LoginManager, login_user, login_required
 from flask_sqlalchemy import SQLAlchemy
 
 # instancia a aplicação
 app = Flask(__name__)
 
+# definição da autenticação antes do banco de dados
+loginManager = LoginManager()
+app.config["SECRET_KEY"] = "23eeeb4347bdd26bfc6b7ee9a3b755dd"
+
 # define as configurações do banco de dados
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///ecommerce.db"
 db = SQLAlchemy(app)
+
+# definição da autenticação depois do banco de dados
+loginManager.init_app(app)
+loginManager.login_view = "login"
 
 # instancia o cors
 CORS(app)
@@ -26,6 +34,11 @@ class Product(db.Model):
   price = db.Column(db.Float, nullable=False)
   description = db.Column(db.Text, nullable=True)
 
+# para recuperar as informações do usuário que está logado
+@loginManager.user_loader
+def loadUser(userId):
+  return User.query.get(int(userId))
+
 # rota para criar o login do usuário
 @app.route("/login", methods=["POST"])
 def login():
@@ -34,12 +47,15 @@ def login():
   user = User.query.filter_by(userName=data.get("userName")).first()
 
   if user and data.get("password") == user.password:
+      login_user(user)
+
       return jsonify({ "message": "Logged in successfully" }), 200
 
   return jsonify({ "message": "Unauthorized, invalid credentials" }), 401
 
 # rota para criar um produto
 @app.route("/products/add", methods=["POST"])
+@login_required
 def addProduct():
   data = request.json
 
@@ -91,6 +107,7 @@ def getProduct(id):
 
 # rota para alterar um produto
 @app.route("/products/update/<int:id>", methods=["PUT"])
+@login_required
 def updateProduct(id):
   product = Product.query.get(id)
 
@@ -114,6 +131,7 @@ def updateProduct(id):
 
 # rota para excluir um produto
 @app.route("/products/delete/<int:id>", methods=["DELETE"])
+@login_required
 def deleteProduct(id):
   product = Product.query.get(id)
 
