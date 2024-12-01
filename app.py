@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
 # instancia a aplicação
 app = Flask(__name__)
@@ -7,6 +8,8 @@ app = Flask(__name__)
 # define as configurações do banco de dados
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///ecommerce.db"
 db = SQLAlchemy(app)
+
+CORS(app)
 
 # cria a tabela produto
 class Product(db.Model):
