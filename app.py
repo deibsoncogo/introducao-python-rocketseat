@@ -33,6 +33,18 @@ def addProduct():
     return jsonify({"message": "Product added successfully"}), 201
   return jsonify({ "message": "Invalid product data" }), 422
 
+# rota para excluir um produto
+@app.route("/products/delete/<int:id>", methods=["DELETE"])
+def deleteProduct(id):
+  product = Product.query.get(id)
+
+  if product:
+    db.session.delete(product)
+    db.session.commit()
+
+    return jsonify({ "message": "Product deleted successfully" }), 205
+  return jsonify({ "message": "Product not found" }), 404
+
 # define uma rota raiz
 @app.route("/")
 def helloWorld():
