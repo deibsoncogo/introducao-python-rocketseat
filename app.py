@@ -10,6 +10,7 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///ecommerce.db"
 db = SQLAlchemy(app)
 
+# instancia o cors
 CORS(app)
 
 # cria a tabela produto
@@ -24,6 +25,18 @@ class Product(db.Model):
   name = db.Column(db.String(120), nullable=False)
   price = db.Column(db.Float, nullable=False)
   description = db.Column(db.Text, nullable=True)
+
+# rota para criar o login do usuário
+@app.route("/login", methods=["POST"])
+def login():
+  data = request.json
+
+  user = User.query.filter_by(userName=data.get("userName")).first()
+
+  if user and data.get("password") == user.password:
+      return jsonify({ "message": "Logged in successfully" }), 200
+
+  return jsonify({ "message": "Unauthorized, invalid credentials" }), 401
 
 # rota para criar um produto
 @app.route("/products/add", methods=["POST"])
@@ -40,7 +53,7 @@ def addProduct():
     db.session.add(product)
     db.session.commit()
 
-    return jsonify({"message": "Product added successfully"}), 201
+    return jsonify({ "message": "Product added successfully" }), 201
 
   return jsonify({ "message": "Invalid product data" }), 422
 
