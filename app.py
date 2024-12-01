@@ -34,6 +34,23 @@ def addProduct():
 
   return jsonify({ "message": "Invalid product data" }), 422
 
+# rota para buscar todos os produtos
+@app.route("/products", methods=["GET"])
+def getProducts():
+  products = Product.query.all()
+
+  productList = []
+
+  for product in products:
+    productList.append({
+      "id": product.id,
+      "name": product.name,
+      "price": product.price,
+      "description": product.description,
+    })
+
+  return jsonify(productList), 200
+
 # rota para buscar um produto
 @app.route("/products/<int:id>", methods=["GET"])
 def getProduct(id):
@@ -87,8 +104,8 @@ def deleteProduct(id):
 
 # define uma rota raiz
 @app.route("/")
-def helloWorld():
-  return "Hello World"
+def index():
+  return jsonify({ "message": "Hello World" })
 
 # executa a aplicação
 if __name__ == "__main__":
