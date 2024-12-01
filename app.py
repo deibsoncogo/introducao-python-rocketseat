@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from flask_login import UserMixin, LoginManager, login_user, login_required
+from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
 from flask_sqlalchemy import SQLAlchemy
 
 # instancia a aplicação
@@ -52,6 +52,14 @@ def login():
       return jsonify({ "message": "Logged in successfully" }), 200
 
   return jsonify({ "message": "Unauthorized, invalid credentials" }), 401
+
+# rota para deslogar o usuário
+@app.route("/logout", methods=["POST"])
+@login_required
+def logout():
+  logout_user()
+
+  return jsonify({ "message": "Logout in successfully" }), 200
 
 # rota para criar um produto
 @app.route("/products/add", methods=["POST"])
