@@ -192,6 +192,28 @@ def removeToCart(productId):
 
   return jsonify({ "message": "Failed to remove item from the cart"}), 404
 
+# rota para visualizar o carrinho de compras
+@app.route("/cart", methods=["GET"])
+@login_required
+def viewCart():
+  user = User.query.get(int(current_user.id))
+
+  cartItens = user.cart
+  cartContent = []
+
+  for cartItem in cartItens:
+    product = Product.query.get(cartItem.productId)
+
+    cartContent.append({
+      "id": cartItem.id,
+      "userId": cartItem.userId,
+      "productId": product.id,
+      "productName": product.name,
+      "productPrice": product.price
+    })
+
+    return jsonify(cartContent), 200
+
 # define uma rota raiz
 @app.route("/")
 def index():
