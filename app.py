@@ -214,6 +214,21 @@ def viewCart():
 
     return jsonify(cartContent), 200
 
+# rota para finalizar o carrinho de compras
+@app.route("/cart/checkout", methods=["POST"])
+@login_required
+def checkout():
+  user = User.query.get(int(current_user.id))
+
+  cartItens = user.cart
+
+  for cartItem in cartItens:
+    db.session.delete(cartItem)
+
+  db.session.commit()
+
+  return jsonify({ "message": "Checkout successful, cart has been cleared"}), 201
+
 # define uma rota raiz
 @app.route("/")
 def index():
