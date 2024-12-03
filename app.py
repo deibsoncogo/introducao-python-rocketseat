@@ -199,20 +199,24 @@ def viewCart():
   user = User.query.get(int(current_user.id))
 
   cartItens = user.cart
-  cartContent = []
 
-  for cartItem in cartItens:
-    product = Product.query.get(cartItem.productId)
+  if cartItens:
+    cartContent = []
 
-    cartContent.append({
-      "id": cartItem.id,
-      "userId": cartItem.userId,
-      "productId": product.id,
-      "productName": product.name,
-      "productPrice": product.price
-    })
+    for cartItem in cartItens:
+      product = Product.query.get(cartItem.productId)
+
+      cartContent.append({
+        "id": cartItem.id,
+        "userId": cartItem.userId,
+        "productId": product.id,
+        "productName": product.name,
+        "productPrice": product.price
+      })
 
     return jsonify(cartContent), 200
+
+  return jsonify({ "message": "Cart not found" }), 404
 
 # rota para finalizar o carrinho de compras
 @app.route("/cart/checkout", methods=["POST"])
