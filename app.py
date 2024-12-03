@@ -176,6 +176,22 @@ def addToCart(productId):
 
   return jsonify({ "message": "Failed to add item to the cart"}), 400
 
+# rota para remover um produto do carrinho de compras
+@app.route("/cart/remove/<int:productId>", methods=["DELETE"])
+@login_required
+def removeToCart(productId):
+  cartItem = CartItem.query.filter_by(
+    userId=current_user.id, productId=productId,
+  ).first()
+
+  if cartItem:
+    db.session.delete(cartItem)
+    db.session.commit()
+
+    return jsonify({ "message": "Item removed from the cart successfully" }), 205
+
+  return jsonify({ "message": "Failed to remove item from the cart"}), 404
+
 # define uma rota raiz
 @app.route("/")
 def index():
