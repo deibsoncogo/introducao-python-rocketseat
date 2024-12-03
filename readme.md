@@ -20,6 +20,10 @@ Estou animado para continuar explorando o universo Python e aplicar esses aprend
 
 Este projeto não está sendo executado em nenhum servidor online, mas você pode seguir os seguintes passo para rodar ele em sua maquina.
 
+Você utilizar o projeto abaixo pronto para o `Insomnia` para realizar as execuções das rotas:
+
+[![Run in Insomnia}](https://insomnia.rest/images/run.svg)](https://insomnia.rest/run/?label=Introdu%C3%A7%C3%A3o%20ao%20Python%20%7C%20Rocketseat&uri=https%3A%2F%2Fraw.githubusercontent.com%2Fdeibsoncogo%2Fintroducao-python-rocketseat%2Frefs%2Fheads%2Fmaster%2Fdocs%2Finsomnia.json)
+
 ## Instalação
 
 Primeiramente instale as dependências utilizando o `PIP3`:
