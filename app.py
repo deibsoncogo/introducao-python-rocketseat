@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
+from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 
 # instancia a aplicação
@@ -157,6 +157,24 @@ def deleteProduct(id):
     return jsonify({ "message": "Product deleted successfully" }), 205
 
   return jsonify({ "message": "Product not found" }), 404
+
+# rota para adicionar um produto ao carrinho de compras
+@app.route("/cart/add/<int:productId>", methods=["POST"])
+@login_required
+def addToCart(productId):
+  user = User.query.get(int(current_user.id))
+
+  product = Product.query.get(productId)
+
+  if user and product:
+    cartItem = CartItem(userId=user.id, productId=product.id)
+
+    db.session.add(cartItem)
+    db.session.commit()
+
+    return jsonify({ "message": "Item added to the cart successfully" }), 201
+
+  return jsonify({ "message": "Failed to add item to the cart"}), 400
 
 # define uma rota raiz
 @app.route("/")
